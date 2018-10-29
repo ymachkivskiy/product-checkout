@@ -7,12 +7,14 @@ import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.Prod
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
 @RestController
+@RequestMapping(consumes = "application/json")
 public class ProductsController {
 
     @GetMapping("/products")

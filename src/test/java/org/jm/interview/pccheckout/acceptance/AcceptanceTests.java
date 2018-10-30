@@ -65,40 +65,6 @@ public class AcceptanceTests {
         );
     }
 
-    private static ProductResource newProduct() {
-        return new ProductResource("P-" + productCounter.getAndIncrement());
-    }
-
-    private void defineProductPrice(ProductResource product, long priceCents) throws Exception {
-        mvc.perform(put("/products")
-                .content(resourcesMapper.writeValueAsString(pricedProduct(product, priceCents)))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    private void checkoutShoppingCard(ShoppingCardResource shoppingCard, long expectedTotalPriceCents) throws Exception {
-        mvc.perform(post("/checkout")
-                .content(resourcesMapper.writeValueAsString(shoppingCard))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("totalPrice", is(expectedTotalPriceCents)));
-    }
-
-    private static ShoppingCardResource shoppingCard(ProductQuantityResource... productQuantityResources) {
-        return ShoppingCardResource.builder().products(asList(productQuantityResources)).build();
-    }
-
-    private static ProductQuantityResource productQuantity(ProductResource product, int quantity) {
-        return ProductQuantityResource.builder().product(product).quantity(quantity).build();
-    }
-
-    private static ProductPriceResource pricedProduct(ProductResource product, long priceCents) {
-        return ProductPriceResource.builder()
-                .price(PriceResource.builder().cents(priceCents).build())
-                .product(product)
-                .build();
-    }
-
     @Test
     public void price_products_individually_when_not_enough_quantity_to_multi_price() throws Exception {
         ProductResource product_10cnt__7cnt_for_20 = newProduct();
@@ -110,21 +76,6 @@ public class AcceptanceTests {
                 shoppingCard(productQuantity(product_10cnt__7cnt_for_20, 15)),
                 15 * 10
         );
-    }
-
-    private void defineProductMultiPrice(ProductResource product, long priceCents, int minimalQuantity) throws Exception {
-        mvc.perform(put("/products/multi-price")
-                .content(resourcesMapper.writeValueAsString(multiPricedProduct(product, minimalQuantity, priceCents)))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    private static ProductMultiPriceResource multiPricedProduct(ProductResource product, int minimalQuantity, long priceCents) {
-        return ProductMultiPriceResource.builder()
-                .price(PriceResource.builder().cents(priceCents).build())
-                .quantity(minimalQuantity)
-                .product(product)
-                .build();
     }
 
     @Test
@@ -148,47 +99,13 @@ public class AcceptanceTests {
         defineProductPrice(product_15cnt, 15);
         defineProductPrice(product_10cnt, 10);
 
-        defineBundle(20, product_10cnt, product_15cnt);
+        defineBundle(product_10cnt, product_15cnt, 20);
 
         checkoutShoppingCard(
                 shoppingCard(
                         productQuantity(product_10cnt, 5),
                         productQuantity(product_15cnt, 7)),
                 5 * 20 + 2 * 15
-        );
-    }
-
-    private void defineBundle(long bundlePriceCents, ProductResource... products) throws Exception {
-        mvc.perform(put("/products/bundles")
-                .content(resourcesMapper.writeValueAsString(bundlePriceProducts(bundlePriceCents, products)))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    private static BundlePriceProductsResource bundlePriceProducts(long bundlePriceCents, ProductResource... products) {
-        return BundlePriceProductsResource.builder()
-                .price(PriceResource.builder().cents(bundlePriceCents).build())
-                .products(asList(products))
-                .build();
-    }
-
-    @Test
-    public void price_products_individually_because_of_incomplete_bundles() throws Exception {
-        ProductResource product_5cnt = newProduct();
-        ProductResource product_10cnt = newProduct();
-        ProductResource product_15cnt = newProduct();
-
-        defineProductPrice(product_5cnt, 5);
-        defineProductPrice(product_10cnt, 10);
-        defineProductPrice(product_15cnt, 15);
-
-        defineBundle(13, product_5cnt, product_10cnt, product_15cnt);
-
-        checkoutShoppingCard(
-                shoppingCard(
-                        productQuantity(product_10cnt, 5),
-                        productQuantity(product_15cnt, 5)),
-                5 * 10 + 15 * 5
         );
     }
 
@@ -202,7 +119,7 @@ public class AcceptanceTests {
         defineProductPrice(product_10cnt, 10);
         defineProductPrice(product_15cnt, 15);
 
-        defineBundle(13, product_5cnt, product_10cnt);
+        defineBundle(product_5cnt, product_10cnt, 13);
 
         checkoutShoppingCard(
                 shoppingCard(
@@ -227,7 +144,7 @@ public class AcceptanceTests {
         defineProductMultiPrice(product_10cnt__9cnt_for_5, 9, 5);
         defineProductMultiPrice(product_15cnt__13cnt_for_10, 13, 10);
 
-        defineBundle(22, product_20cnt, product_5cnt);
+        defineBundle(product_20cnt, product_5cnt, 22);
 
         checkoutShoppingCard(
                 shoppingCard(
@@ -247,26 +164,67 @@ public class AcceptanceTests {
 
     }
 
-    //should it be supported in this version?
-    @Test
-    public void price_products_with_cheaper_bundle() throws Exception {
-        ProductResource product_5cnt = newProduct();
-        ProductResource product_10cnt = newProduct();
-        ProductResource product_15cnt = newProduct();
+    private void defineProductPrice(ProductResource product, long priceCents) throws Exception {
+        mvc.perform(put("/products")
+                .content(resourcesMapper.writeValueAsString(pricedProduct(product, priceCents)))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+    }
 
-        defineProductPrice(product_5cnt, 5);
-        defineProductPrice(product_10cnt, 10);
-        defineProductPrice(product_15cnt, 15);
+    private void defineBundle(ProductResource firstProduct, ProductResource secondProduct, long bundlePriceCents) throws Exception {
+        mvc.perform(put("/products/bundles")
+                .content(resourcesMapper.writeValueAsString(bundlePriceProducts(bundlePriceCents, firstProduct, secondProduct)))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+    }
 
-        defineBundle(13, product_5cnt, product_10cnt);
-        defineBundle(20, product_10cnt, product_15cnt);
+    private void checkoutShoppingCard(ShoppingCardResource shoppingCard, long expectedTotalPriceCents) throws Exception {
+        mvc.perform(post("/checkout")
+                .content(resourcesMapper.writeValueAsString(shoppingCard))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("totalPrice", is(expectedTotalPriceCents)));
+    }
 
-        checkoutShoppingCard(
-                shoppingCard(
-                        productQuantity(product_5cnt, 10),
-                        productQuantity(product_10cnt, 10),
-                        productQuantity(product_15cnt, 10)),
-                Math.min(10 * 13 + 10 * 15, 10 * 5 + 10 * 20)
-        );
+    private void defineProductMultiPrice(ProductResource product, long priceCents, int minimalQuantity) throws Exception {
+        mvc.perform(put("/products/multi-price")
+                .content(resourcesMapper.writeValueAsString(multiPricedProduct(product, minimalQuantity, priceCents)))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    private static ProductMultiPriceResource multiPricedProduct(ProductResource product, int minimalQuantity, long priceCents) {
+        return ProductMultiPriceResource.builder()
+                .price(PriceResource.builder().cents(priceCents).build())
+                .quantity(minimalQuantity)
+                .product(product)
+                .build();
+    }
+
+    private static ProductResource newProduct() {
+        return new ProductResource("P-" + productCounter.getAndIncrement());
+    }
+
+    private static ShoppingCardResource shoppingCard(ProductQuantityResource... productQuantityResources) {
+        return ShoppingCardResource.builder().products(asList(productQuantityResources)).build();
+    }
+
+    private static ProductQuantityResource productQuantity(ProductResource product, int quantity) {
+        return ProductQuantityResource.builder().product(product).quantity(quantity).build();
+    }
+
+    private static ProductPriceResource pricedProduct(ProductResource product, long priceCents) {
+        return ProductPriceResource.builder()
+                .price(PriceResource.builder().cents(priceCents).build())
+                .product(product)
+                .build();
+    }
+
+    private static BundlePriceProductsResource bundlePriceProducts(long bundlePriceCents, ProductResource firstProduct, ProductResource secondProduct) {
+        return BundlePriceProductsResource.builder()
+                .price(PriceResource.builder().cents(bundlePriceCents).build())
+                .firstProduct(firstProduct)
+                .secondProduct(secondProduct)
+                .build();
     }
 }

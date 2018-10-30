@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class BundlePriceProductsResource {
-    private List<ProductResource> products;
+    private ProductResource firstProduct;
+    private ProductResource secondProduct;
     private PriceResource price;
 }

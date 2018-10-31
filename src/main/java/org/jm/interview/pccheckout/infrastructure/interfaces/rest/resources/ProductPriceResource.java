@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class ProductPriceResource {
+
     private ProductResource product;
     private PriceResource price;
 }

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BundlePriceProductsResource {
+
     private ProductResource firstProduct;
     private ProductResource secondProduct;
     private PriceResource price;

@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 @Data
 public class ProductQuantityResource {
+
     private ProductResource product;
     private int quantity;
 }

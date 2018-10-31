@@ -12,5 +12,6 @@ import java.util.List;
 @Builder
 @Data
 public class ShoppingCardResource {
+
     private List<ProductQuantityResource> products;
 }

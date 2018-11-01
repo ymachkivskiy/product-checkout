@@ -1,10 +1,6 @@
 package org.jm.interview.pccheckout.application;
 
-import org.jm.interview.pccheckout.domain.Bundle;
-import org.jm.interview.pccheckout.domain.Product;
-import org.jm.interview.pccheckout.domain.ProductQuantity;
-import org.jm.interview.pccheckout.domain.ProductRepository;
-import org.jm.interview.pccheckout.domain.Quantity;
+import org.jm.interview.pccheckout.domain.*;
 import org.jm.interview.pccheckout.domain.pricing.PriceReceipt;
 import org.jm.interview.pccheckout.domain.pricing.PricingService;
 import org.jm.interview.pccheckout.domain.pricing.ShoppingCard;
@@ -30,11 +26,14 @@ import static org.jm.interview.pccheckout.domain.Quantity.quantity;
 public class ProductOperations {
 
     private final ProductRepository productRepository;
+    private final BundleRepository bundleRepository;
     private final PricingService pricingService;
 
     public ProductOperations(ProductRepository productRepository,
+                             BundleRepository bundleRepository,
                              PricingService pricingService) {
         this.productRepository = productRepository;
+        this.bundleRepository = bundleRepository;
         this.pricingService = pricingService;
     }
 
@@ -68,11 +67,7 @@ public class ProductOperations {
 
         Bundle bundle = createBundle(firstProduct, secondProduct, price(bundlePriceProducts.getPrice().getCents()));
 
-        firstProduct.overrideBundle(bundle);
-        secondProduct.overrideBundle(bundle);
-
-        productRepository.storeProduct(firstProduct);
-        productRepository.storeProduct(secondProduct);
+        bundleRepository.storeBundle(bundle);
     }
 
     private ShoppingCard createShoppingCard(ShoppingCardResource shoppingCardResource) {

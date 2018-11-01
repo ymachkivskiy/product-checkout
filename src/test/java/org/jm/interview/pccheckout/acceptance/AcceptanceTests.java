@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -178,12 +180,12 @@ public class AcceptanceTests {
                 .andExpect(status().is2xxSuccessful());
     }
 
-    private void checkoutShoppingCard(ShoppingCardResource shoppingCard, long expectedTotalPriceCents) throws Exception {
+    private void checkoutShoppingCard(ShoppingCardResource shoppingCard, int expectedTotalPriceCents) throws Exception {
         mvc.perform(post("/checkout")
                 .content(resourcesMapper.writeValueAsString(shoppingCard))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("totalPrice", is(expectedTotalPriceCents)));
+                .andExpect(jsonPath("totalPrice.cents", is(equalTo(expectedTotalPriceCents))));
     }
 
     private void defineProductMultiPrice(ProductResource product, long priceCents, int minimalQuantity) throws Exception {

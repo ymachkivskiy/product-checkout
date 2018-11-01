@@ -9,7 +9,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-@ToString
+@ToString(exclude = "bundle")
 public class Product {
 
     private final String productName;
@@ -24,6 +24,10 @@ public class Product {
 
     public static Product createProduct(String productName, Price individualPrice) {
         return new Product(checkNotNull(productName), checkNotNull(individualPrice));
+    }
+
+    public String getProductName() {
+        return productName;
     }
 
     public Price getUnitPrice() {
@@ -43,17 +47,8 @@ public class Product {
         return Optional.ofNullable(bundle);
     }
 
-    public boolean hasBundle() {
-        return bundle != null;
-    }
-
-    public void overrideBundle(Bundle bundle) {
+    public void setBundle(Bundle bundle) {
         checkNotNull(bundle);
-
-        if (this.bundle != null) {
-            checkState(this.bundle.isSameBundle(bundle), "Bundle of product cannot be overridden");
-        }
-
         this.bundle = bundle;
     }
 

@@ -40,7 +40,19 @@ public class Bundle {
         checkNotNull(secondProduct);
         checkNotNull(price);
         checkArgument(!Objects.equals(firstProduct, secondProduct), "Cannot create bundle with same product");
+
+//        todo: add check for legal bundle creation
+
         return new Bundle(firstProduct, secondProduct, price);
+    }
+
+
+    public Product getFirstProduct() {
+        return firstProduct;
+    }
+
+    public Product getSecondProduct() {
+        return secondProduct;
     }
 
     public Collection<Product> getProducts() {

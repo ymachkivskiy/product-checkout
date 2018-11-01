@@ -1,10 +1,12 @@
 package org.jm.interview.pccheckout.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import org.jm.interview.pccheckout.domain.utils.ComparableMixin;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+@Data
 public class Quantity implements Comparable<Quantity>, ComparableMixin<Quantity> {
 
     public static final Quantity ZERO = quantity(0);

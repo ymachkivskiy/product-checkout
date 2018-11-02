@@ -41,7 +41,7 @@ public class DefaultProductsRepositoryTest {
         doReturn(Optional.of(productInfoEntity))
                 .when(productInfoRepositoryMock).findById("product-a");
 
-        Product product = defaultProductsRepository.lookupProduct("product-a");
+        Product product = defaultProductsRepository.findProduct("product-a");
 
         assertThat(product.getProductName()).isEqualTo("product-a");
         assertThat(product.getUnitPrice()).isEqualTo(price(123));
@@ -70,7 +70,7 @@ public class DefaultProductsRepositoryTest {
         doReturn(Optional.of(productAEntity))
                 .when(productInfoRepositoryMock).findById("product-a");
 
-        Product product = defaultProductsRepository.lookupProduct("product-a");
+        Product product = defaultProductsRepository.findProduct("product-a");
 
         assertThat(product).isEqualTo(createProduct("product-a", price(123)));
         assertThat(product.getBundle().get().getPrice()).isEqualTo(price(100));
@@ -88,7 +88,7 @@ public class DefaultProductsRepositoryTest {
         doReturn(Optional.empty())
                 .when(productInfoRepositoryMock).findById("product-404");
 
-        Throwable throwable = catchThrowable(() -> defaultProductsRepository.lookupProduct("product-404"));
+        Throwable throwable = catchThrowable(() -> defaultProductsRepository.findProduct("product-404"));
 
         assertThat(throwable)
                 .isNotNull()

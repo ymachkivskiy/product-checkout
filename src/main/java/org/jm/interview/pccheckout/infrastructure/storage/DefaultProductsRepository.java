@@ -18,7 +18,7 @@ public class DefaultProductsRepository implements ProductRepository, BundleRepos
     }
 
     @Override
-    public Product lookupProduct(String productName) throws ProductNotFoundException {
+    public Product findProduct(String productName) throws ProductNotFoundException {
         return productInfoRepository.findById(productName)
                 .map(this::toProduct)
                 .orElseThrow(() -> new ProductNotFoundException(productName));

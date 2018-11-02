@@ -4,13 +4,7 @@ import org.jm.interview.pccheckout.domain.*;
 import org.jm.interview.pccheckout.domain.pricing.PriceReceipt;
 import org.jm.interview.pccheckout.domain.pricing.PricingService;
 import org.jm.interview.pccheckout.domain.pricing.ShoppingCard;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.BundlePriceProductsResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.PriceResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.PricingRecipeResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ProductMultiPriceResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ProductPriceResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ProductQuantityResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ShoppingCardResource;
+import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -54,7 +48,7 @@ public class ProductOperations {
     }
 
     public void defineProductMultiPrice(ProductMultiPriceResource multiPriceProduct) {
-        Product product = productRepository.lookupProduct(multiPriceProduct.getProduct().getProductName());
+        Product product = productRepository.findProduct(multiPriceProduct.getProduct().getProductName());
 
         product.overrideMultiPrice(multiPrice(quantity(multiPriceProduct.getQuantity()), price(multiPriceProduct.getPrice().getCents())));
 
@@ -62,8 +56,8 @@ public class ProductOperations {
     }
 
     public void defineProductBundle(BundlePriceProductsResource bundlePriceProducts) {
-        Product firstProduct = productRepository.lookupProduct(bundlePriceProducts.getFirstProduct().getProductName());
-        Product secondProduct = productRepository.lookupProduct(bundlePriceProducts.getSecondProduct().getProductName());
+        Product firstProduct = productRepository.findProduct(bundlePriceProducts.getFirstProduct().getProductName());
+        Product secondProduct = productRepository.findProduct(bundlePriceProducts.getSecondProduct().getProductName());
 
         Bundle bundle = createBundle(firstProduct, secondProduct, price(bundlePriceProducts.getPrice().getCents()));
 
@@ -80,7 +74,7 @@ public class ProductOperations {
     }
 
     private ProductQuantity toProductQuantity(ProductQuantityResource productQuantityResource) {
-        Product product = productRepository.lookupProduct(productQuantityResource.getProduct().getProductName());
+        Product product = productRepository.findProduct(productQuantityResource.getProduct().getProductName());
         Quantity quantity = quantity(productQuantityResource.getQuantity());
 
         return productQuantity(product, quantity);

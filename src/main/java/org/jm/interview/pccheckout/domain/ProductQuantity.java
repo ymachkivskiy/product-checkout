@@ -1,10 +1,10 @@
 package org.jm.interview.pccheckout.domain;
 
-import lombok.Getter;
+import lombok.Data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Getter
+@Data
 public class ProductQuantity {
 
     private final Product product;

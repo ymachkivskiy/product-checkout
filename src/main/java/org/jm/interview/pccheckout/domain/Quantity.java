@@ -2,7 +2,7 @@ package org.jm.interview.pccheckout.domain;
 
 import lombok.Data;
 import lombok.Getter;
-import org.jm.interview.pccheckout.domain.utils.ComparableMixin;
+import org.jm.interview.pccheckout.utils.ComparableMixin;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

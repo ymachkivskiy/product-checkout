@@ -1,16 +1,10 @@
-package org.jm.interview.pccheckout.acceptance;
+package acceptance;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jm.interview.pccheckout.Application;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.BundlePriceProductsResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.PriceResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ProductMultiPriceResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ProductPriceResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ProductQuantityResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ProductResource;
-import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.ShoppingCardResource;
+import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

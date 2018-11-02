@@ -1,4 +1,4 @@
-package org.jm.interview.pccheckout.domain.utils;
+package org.jm.interview.pccheckout.utils;
 
 public interface ComparableMixin<T> extends Comparable<T> {
 

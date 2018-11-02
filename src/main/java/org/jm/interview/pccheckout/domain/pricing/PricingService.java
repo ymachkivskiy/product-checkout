@@ -5,7 +5,7 @@ import org.jm.interview.pccheckout.domain.Bundle;
 import org.jm.interview.pccheckout.domain.Price;
 import org.jm.interview.pccheckout.domain.Product;
 import org.jm.interview.pccheckout.domain.Quantity;
-import org.jm.interview.pccheckout.domain.pricing.error.UnableToPriceShoppingCardException;
+import org.jm.interview.pccheckout.domain.pricing.exceptions.UnableToPriceShoppingCardException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -16,16 +16,14 @@ import java.util.stream.Stream;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static org.jm.interview.pccheckout.domain.pricing.PriceReceipt.createPriceReceipt;
-import static org.jm.interview.pccheckout.domain.pricing.PricedItem.bundlePriced;
-import static org.jm.interview.pccheckout.domain.pricing.PricedItem.individuallyPriced;
-import static org.jm.interview.pccheckout.domain.pricing.PricedItem.multiPriced;
+import static org.jm.interview.pccheckout.domain.pricing.PricedItem.*;
 
 @Service
 public class PricingService {
 
     public PriceReceipt calculatePrice(ShoppingCard shoppingCard) {
 
-        PricedShoppingCard pricedShoppingCard = shoppingCard.createPricedShoppingCard();
+        PricedShoppingCard pricedShoppingCard = new PricedShoppingCard(shoppingCard);
 
         List<PricedItem> pricedItems = pricersForProducts(shoppingCard.getProducts())
                 .stream()

@@ -1,13 +1,11 @@
 package org.jm.interview.pccheckout.domain;
 
-import lombok.Getter;
-import lombok.ToString;
-import org.jm.interview.pccheckout.domain.utils.ComparableMixin;
+import lombok.Data;
+import org.jm.interview.pccheckout.utils.ComparableMixin;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-@ToString
-@Getter
+@Data
 public class Price implements Comparable<Price>, ComparableMixin<Price> {
 
     public static Price ZERO = price(0);

@@ -27,14 +27,6 @@ public class Bundle {
         return price;
     }
 
-    public boolean containsProduct(Product product) {
-        return firstProduct.equals(product) || secondProduct.equals(product);
-    }
-
-    public boolean isSameBundle(Bundle other) {
-        return other.containsProduct(firstProduct) && other.containsProduct(secondProduct);
-    }
-
     public static Bundle createBundle(Product firstProduct, Product secondProduct, Price price) {
         checkNotNull(firstProduct);
         checkNotNull(secondProduct);

@@ -1,18 +1,20 @@
 package org.jm.interview.pccheckout.infrastructure.storage;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
+@AllArgsConstructor
+@EqualsAndHashCode(exclude = "bundleProduct")
 public class ProductInfoEntity {
 
     @Id

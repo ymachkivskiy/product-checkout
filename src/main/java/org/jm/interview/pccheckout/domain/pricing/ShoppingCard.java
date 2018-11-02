@@ -4,42 +4,44 @@ import org.jm.interview.pccheckout.domain.Product;
 import org.jm.interview.pccheckout.domain.ProductQuantity;
 import org.jm.interview.pccheckout.domain.Quantity;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Collections.unmodifiableMap;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.util.ObjectUtils.isEmpty;
+import static org.jm.interview.pccheckout.domain.ProductQuantity.productQuantity;
 
 public class ShoppingCard {
 
-    private final Map<Product, Quantity> productQuantities;
+    private final List<ProductQuantity> productQuantities;
 
-    public ShoppingCard(Map<Product, Quantity> productQuantities) {
-        this.productQuantities = productQuantities;
+    public ShoppingCard(List<ProductQuantity> productQuantities) {
+        this.productQuantities = unmodifiableList(productQuantities);
     }
 
     public static ShoppingCard createShoppingCard(List<ProductQuantity> cardItems) {
-        checkArgument(!isEmpty(cardItems));
+        checkNotNull(cardItems);
 
-        Map<Product, Quantity> productsQuantities = cardItems.stream()
+        List<ProductQuantity> normalizedQuantities = cardItems.stream()
                 .collect(toMap(
                         ProductQuantity::getProduct,
                         ProductQuantity::getQuantity,
-                        Quantity::sum));
+                        Quantity::sum))
+                .entrySet()
+                .stream()
+                .map(e -> productQuantity(e.getKey(), e.getValue()))
+                .collect(toList());
 
-        return new ShoppingCard(unmodifiableMap(productsQuantities));
+        return new ShoppingCard(normalizedQuantities);
     }
 
     public Collection<Product> getProducts() {
-        return new ArrayList<>(productQuantities.keySet());
+        return productQuantities.stream().map(ProductQuantity::getProduct).collect(toList());
     }
 
-    public PricedShoppingCard createPricedShoppingCard() {
-        return new PricedShoppingCard(new HashMap<>(productQuantities));
+    public Collection<ProductQuantity> getProductQuantities() {
+        return productQuantities;
     }
 }

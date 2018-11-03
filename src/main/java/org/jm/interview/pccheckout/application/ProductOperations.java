@@ -4,6 +4,7 @@ import org.jm.interview.pccheckout.domain.*;
 import org.jm.interview.pccheckout.domain.pricing.PriceReceipt;
 import org.jm.interview.pccheckout.domain.pricing.PricingService;
 import org.jm.interview.pccheckout.domain.pricing.ShoppingCard;
+import org.jm.interview.pccheckout.infrastructure.interfaces.rest.mapping.ResourceDomainMapping;
 import org.jm.interview.pccheckout.infrastructure.interfaces.rest.resources.*;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.jm.interview.pccheckout.domain.Bundle.createBundle;
 import static org.jm.interview.pccheckout.domain.Price.price;
-import static org.jm.interview.pccheckout.domain.Product.MultiPrice.multiPrice;
 import static org.jm.interview.pccheckout.domain.ProductQuantity.productQuantity;
 import static org.jm.interview.pccheckout.domain.Quantity.quantity;
 
@@ -22,13 +22,16 @@ public class ProductOperations {
     private final ProductRepository productRepository;
     private final BundleRepository bundleRepository;
     private final PricingService pricingService;
+    private final ResourceDomainMapping mapping;
 
     public ProductOperations(ProductRepository productRepository,
                              BundleRepository bundleRepository,
-                             PricingService pricingService) {
+                             PricingService pricingService,
+                             ResourceDomainMapping mapping) {
         this.productRepository = productRepository;
         this.bundleRepository = bundleRepository;
         this.pricingService = pricingService;
+        this.mapping = mapping;
     }
 
     public PricingRecipeResource checkout(ShoppingCardResource shoppingCardResource) {
@@ -37,12 +40,12 @@ public class ProductOperations {
 
         PriceReceipt priceReceipt = pricingService.calculatePrice(shoppingCard);
 
-        return new PricingRecipeResource(new PriceResource(priceReceipt.totalPrice().getCents()));
+        return mapping.toPriceRecipeResource(priceReceipt);
     }
 
-    public void defineProductPrice(ProductPriceResource productPrice) {
+    public void defineProductPrice(ProductPriceResource productPriceResource) {
 
-        Product product = Product.createProduct(productPrice.getProduct().getProductName(), price(productPrice.getPrice().getCents()));
+        Product product = mapping.toProduct(productPriceResource);
 
         productRepository.storeProduct(product);
     }
@@ -50,7 +53,7 @@ public class ProductOperations {
     public void defineProductMultiPrice(ProductMultiPriceResource multiPriceProduct) {
         Product product = productRepository.findProduct(multiPriceProduct.getProduct().getProductName());
 
-        product.overrideMultiPrice(multiPrice(quantity(multiPriceProduct.getQuantity()), price(multiPriceProduct.getPrice().getCents())));
+        product.overrideMultiPrice(mapping.toMultiPrice(multiPriceProduct));
 
         productRepository.storeProduct(product);
     }

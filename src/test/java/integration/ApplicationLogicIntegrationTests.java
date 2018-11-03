@@ -63,6 +63,10 @@ public class ApplicationLogicIntegrationTests {
         );
 
         assertThat(recipe.getTotalPrice().getCents()).isEqualTo(5 * 25 + 35 * 10);
+        assertThat(recipe.getRecipeItems()).containsOnly(
+                new PriceRecipeItemResource(asList(productQuantity("product-A", 5)), price(25 * 5)),
+                new PriceRecipeItemResource(asList(productQuantity("product-B", 35)), price(10 * 35))
+        );
     }
 
     @Test
@@ -151,6 +155,10 @@ public class ApplicationLogicIntegrationTests {
 
     private static BundlePriceProductsResource productBundle(String firstProductName, String secondProductName, int bundlePrice) {
         return BundlePriceProductsResource.builder().firstProduct(new ProductResource(firstProductName)).secondProduct(new ProductResource(secondProductName)).price(new PriceResource(bundlePrice)).build();
+    }
+
+    private static PriceResource price(int priceCents) {
+        return PriceResource.builder().cents(priceCents).build();
     }
 }
 

@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class PricingRecipeResource {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PriceRecipeItemResource {
 
-    private PriceResource totalPrice;
-    private List<PriceRecipeItemResource> recipeItems;
+    private List<ProductQuantityResource> productQuantities;
+    private PriceResource priceResource;
 }

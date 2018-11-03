@@ -5,3 +5,6 @@
 * Multi-price and cheaper bundles can be defined only for products added to system.
 * Products number is unlimited, service performs only pricing.
 * Any product can be only in single cheaper bundle with another one. Product **A** together with product **B** costs **Y** cents means that product **B** with product **A** costs **Y** cents. It also means that neither product **A** nor **B** could be in bundle with another products.
+
+#Building project
+As a regular spring-boot maven based project, it can be built with **mvn package** command.
